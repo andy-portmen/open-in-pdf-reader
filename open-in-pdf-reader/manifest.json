@@ -1,19 +1,16 @@
 {
   "name": "Open in PDF Reader",
-  "short_name": "iowpviewer",
   "description": "Adds a context menu item to send PDF links directly to a PDF viewer like Adobe Acrobat Reader",
   "author": "Andy Portmen",
-  "version": "0.1.2",
+  "version": "0.1.6",
   "manifest_version": 2,
   "default_locale": "en",
   "permissions": [
     "storage",
-    "tabs",
     "contextMenus",
     "notifications",
     "nativeMessaging",
-    "downloads",
-    "https://api.github.com/repos/andy-portmen/native-client/releases/latest"
+    "downloads"
   ],
   "background": {
     "persistent": false,
@@ -22,7 +19,7 @@
       "common.js"
     ]
   },
-  "homepage_url": "http://add0n.com/open-in.html?from=pdf",
+  "homepage_url": "https://add0n.com/open-in.html?from=pdf",
   "icons": {
     "16": "data/icons/16.png",
     "19": "data/icons/19.png",
@@ -49,11 +46,5 @@
     "js": ["data/inject.js"],
     "run_at": "document_start",
     "all_frames": true
-  }],
-  "applications": {
-    "gecko": {
-      "id": "{0d3afca0-aedf-491f-b0f9-9ffc22113ea8}",
-      "strict_min_version": "52.0"
-    }
-  }
+  }]
 }

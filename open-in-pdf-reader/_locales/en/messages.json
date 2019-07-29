@@ -14,6 +14,9 @@
   "options_notify": {
     "message": "Display desktop notifications"
   },
+  "options_validate": {
+    "message": "Validate"
+  },
   "options_reset": {
     "message": "Reset"
   },
@@ -22,6 +25,9 @@
   },
   "options_save": {
     "message": "Save"
+  },
+  "options_faqs": {
+    "message": "Open FAQs page on updates"
   },
   "options_footnote_1": {
     "message": "If path is not provided, the default PDF application is used."
@@ -35,7 +41,28 @@
   "options_footnote_4": {
     "message": "If you want to uncheck this option, first make sure your external executable can handle opening remote links. Most known desktop PDF readers cannot open from remote URLs."
   },
+  "options_footnote_5": {
+    "message": "Only use this path validation tool if the absolute path to the executable is inserted. If for instance, you need to use a command or a relative path, this tool is not working properly"
+  },
   "options_bold": {
     "message": "Important note"
+  },
+  "options_translate": {
+    "message": "Translate this extension to your language"
+  },
+  "options_open_faqs": {
+    "message": "Open the FAQs page"
+  },
+  "options_github": {
+    "message": "Open GitHub page"
+  },
+  "bg_msg_1": {
+    "message": "Cannot find the downloaded PDF file!"
+  },
+  "bg_msg_2": {
+    "message": "Download was interrupted"
+  },
+  "bg_msg_3": {
+    "message": "Please wait..."
   }
 }

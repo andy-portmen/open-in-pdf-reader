@@ -24,10 +24,13 @@ function observe(e) {
 }
 
 function update(bol) {
-  document[bol ? 'addEventListener' : 'removeEventListener']('click', observe);
+  document.removeEventListener('click', observe);
+  if (bol) {
+    document.addEventListener('click', observe);
+  }
 }
 
 chrome.storage.local.get({
   link: false
 }, prefs => update(prefs.link));
-chrome.storage.onChanged.addListener(prefs => prefs.link && update(prefs.link.newValue));
+chrome.storage.onChanged.addListener(prefs => update(prefs.link.newValue));

@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Open in PDF Reader :: Options</title>
+  <meta charset="utf-8">
   <style>
     body {
       padding: 10px;
@@ -9,8 +10,11 @@
       font-size: 13px;
       min-width: 500px;
     }
-    input {
+    input[type=text] {
       width: 100%;
+    }
+    #check {
+      width: 100px;
     }
     code {
       font-size: 10px;
@@ -25,14 +29,28 @@
       font-size: 90%;
       color: ##909090;
     }
+    #status {
+      float: right;
+      color: #0091ff;
+    }
   </style>
 </head>
 
 <body>
-  <label>
-    <span data-i18n="options_path"></span><sup>1</sup>
-    <input type="path" id="path">
-  </label>
+  <table width=100%>
+    <tr>
+      <td><span data-i18n="options_path"></span><sup>1</sup></td>
+    </tr>
+    <tr>
+      <td>
+        <div style="display: flex;">
+          <input type="text" id="path">&nbsp;
+          <button id="check" data-i18n="options_validate"></button><sup>5</sup>
+        </div>
+      </td>
+    </tr>
+  </table>
+
   <p><span data-i18n="options_examples"></span>
     <ul>
       <li>Windows: <code id="example-w"></code></li>
@@ -52,8 +70,14 @@
       <td><input type="checkbox" id="notify"></td>
       <td><label for="notify" data-i18n="options_notify"></td>
     </tr>
+    <tr>
+      <td><input type="checkbox" id="faqs"></td>
+      <td><label for="faqs" data-i18n="options_faqs"></td>
+    </tr>
   </table>
 
+  <br>
+  <div id="explore" data-cols="4"></div>
   <br>
   <div>
     <button id="reset" data-i18n="options_reset"></button>
@@ -73,8 +97,15 @@
     <br/>
     <br/>
     4. <b data-i18n="options_bold"></b>: <span data-i18n="options_footnote_4"></span>
+    <br/>
+    5. <span data-i18n="options_footnote_5"></span>
+  </div>
+  <hr>
+  <div class="note">
+    <a target=_blank href="#" data-i18n="options_open_faqs"></a> | <a target=_blank href="https://www.transifex.com/portmen/open-in-a-pdf-reader/dashboard/" data-i18n="options_translate"></a> | <a target=_blank href="https://github.com/andy-portmen/open-in-pdf-reader" data-i18n="options_github"></a>
   </div>
   <script src="/config.js"></script>
   <script src="index.js"></script>
+  <script async src="matched.js"></script>
 </body>
 </html>

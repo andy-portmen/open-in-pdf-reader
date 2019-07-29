@@ -1,7 +1,7 @@
 /* globals config */
 'use strict';
 
-var notify = message => chrome.storage.local.get({
+const notify = message => chrome.storage.local.get({
   notify: true
 }, prefs => prefs.notify && chrome.notifications.create({
   title: chrome.runtime.getManifest().name,
@@ -31,12 +31,12 @@ function download(url) {
                   resolve(d);
                 }
                 else {
-                  reject('Cannot find the downloaded PDF file!');
+                  reject(chrome.i18n.getMessage('bg_msg_1'));
                 }
               });
             }
             else {
-              reject('Download was interrupted');
+              reject(chrome.i18n.getMessage('bg_msg_1'));
             }
           }
         }
@@ -87,7 +87,7 @@ function open(d) {
   });
 }
 
-var onCommand = url => {
+const onCommand = url => {
   chrome.storage.local.get({
     download: config.download,
     path: config.path
@@ -114,12 +114,12 @@ chrome.browserAction.onClicked.addListener(tab => {
 chrome.runtime.onMessage.addListener(request => {
   if (request.method === 'open-in') {
     onCommand(request.href);
-    notify('Please wait...');
+    notify(chrome.i18n.getMessage('bg_msg_3'));
   }
 });
 
 // icon
-var button = {
+const button = {
   mode: ({id, url}) => {
     const enabled = url.indexOf('.pdf') !== -1 || url.indexOf('.PDF') !== -1;
     chrome.browserAction[enabled ? 'enable' : 'disable'](id);
@@ -128,52 +128,46 @@ var button = {
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => changeInfo.url && button.mode(tab));
 
 // One time
-(callback => {
-  chrome.runtime.onInstalled.addListener(callback);
-  chrome.runtime.onStartup.addListener(callback);
-})(() => {
+{
   // add the context-menu
-  chrome.contextMenus.create({
-    id: 'open-in',
-    title: chrome.runtime.getManifest().name,
-    contexts: ['link'],
-    targetUrlPatterns: ['*://*/*pdf*'],
-    documentUrlPatterns: ['*://*/*']
-  });
-  // update disable/enable mode
-  chrome.tabs.query({}, tabs => tabs.forEach(button.mode));
-  // FAQs & Feedback
-  chrome.storage.local.get({
-    'version': null,
-    'faqs': true,
-    'last-update': 0
-  }, prefs => {
-    const version = chrome.runtime.getManifest().version;
+  const onStartup = () => {
+    chrome.contextMenus.create({
+      id: 'open-in',
+      title: chrome.runtime.getManifest().name,
+      contexts: ['link'],
+      targetUrlPatterns: ['*://*/*pdf*'],
+      documentUrlPatterns: ['*://*/*']
+    });
+    // update disable/enable mode
+    chrome.tabs.query({}, tabs => tabs.forEach(button.mode));
+  };
+  chrome.runtime.onInstalled.addListener(onStartup);
+  chrome.runtime.onStartup.addListener(onStartup);
+}
 
-    if (prefs.version ? (prefs.faqs && prefs.version !== version) : true) {
-      const now = Date.now();
-      const doUpdate = (now - prefs['last-update']) / 1000 / 60 / 60 / 24 > 30;
-      chrome.storage.local.set({
-        version,
-        'last-update': doUpdate ? Date.now() : prefs['last-update']
-      }, () => {
-        // do not display the FAQs page if last-update occurred less than 30 days ago.
-        if (doUpdate) {
-          const p = Boolean(prefs.version);
-          window.setTimeout(() => chrome.tabs.create({
-            url: chrome.runtime.getManifest().homepage_url + '&version=' + version +
-              '&type=' + (p ? ('upgrade&p=' + prefs.version) : 'install'),
-            active: p === false
-          }), 3000);
+// FAQs and Feedback
+{
+  const {onInstalled, setUninstallURL, getManifest} = chrome.runtime;
+  const {name, version} = getManifest();
+  const page = getManifest().homepage_url;
+  onInstalled.addListener(({reason, previousVersion}) => {
+    chrome.storage.local.get({
+      'faqs': true,
+      'last-update': 0
+    }, prefs => {
+      if (reason === 'install' || (prefs.faqs && reason === 'update')) {
+        const doUpdate = (Date.now() - prefs['last-update']) / 1000 / 60 / 60 / 24 > 45;
+        if (doUpdate && previousVersion !== version) {
+          chrome.tabs.create({
+            url: page + '&version=' + version +
+              (previousVersion ? '&p=' + previousVersion : '') +
+              '&type=' + reason,
+            active: reason === 'install'
+          });
+          chrome.storage.local.set({'last-update': Date.now()});
         }
-      });
-    }
+      }
+    });
   });
-
-  {
-    const {name, version} = chrome.runtime.getManifest();
-    chrome.runtime.setUninstallURL(
-      chrome.runtime.getManifest().homepage_url + '&rd=feedback&name=' + name + '&version=' + version
-    );
-  }
-});
+  setUninstallURL(page + '&rd=feedback&name=' + encodeURIComponent(name) + '&version=' + version);
+}

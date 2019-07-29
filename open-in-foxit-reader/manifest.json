@@ -2,17 +2,15 @@
   "name": "Open in Foxit™ Reader",
   "description": "Adds a context menu item to send PDF links directly to Foxit™ Reader",
   "author": "Andy Portmen",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "manifest_version": 2,
   "default_locale": "en",
   "permissions": [
     "storage",
-    "tabs",
     "contextMenus",
     "notifications",
     "nativeMessaging",
-    "downloads",
-    "https://api.github.com/repos/andy-portmen/native-client/releases/latest"
+    "downloads"
   ],
   "background": {
     "persistent": false,
@@ -21,7 +19,7 @@
       "common.js"
     ]
   },
-  "homepage_url": "http://add0n.com/open-in.html?from=foxit",
+  "homepage_url": "https://add0n.com/open-in.html?from=foxit",
   "icons": {
     "16": "data/icons/16.png",
     "19": "data/icons/19.png",
