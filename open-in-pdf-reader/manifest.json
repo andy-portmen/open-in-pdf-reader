@@ -12,6 +12,9 @@
     "nativeMessaging",
     "downloads"
   ],
+  "optional_permissions": [
+    "activeTab"
+  ],
   "background": {
     "persistent": false,
     "scripts": [

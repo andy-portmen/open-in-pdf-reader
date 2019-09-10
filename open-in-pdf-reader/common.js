@@ -47,6 +47,7 @@ function download(url) {
 }
 
 function open(d) {
+  const n = Date.now();
   chrome.storage.local.get({
     path: config.path
   }, prefs => {
@@ -75,7 +76,10 @@ function open(d) {
         const msg = resp.stderr || resp.error || resp.stdout;
         if (msg) {
           console.error(resp);
-          notify(msg);
+          // only display errors in 2s window
+          if (Date.now() - n < 2000) {
+            notify(msg.error || msg);
+          }
         }
       }
       else {
@@ -109,7 +113,13 @@ chrome.contextMenus.onClicked.addListener(info => {
   onCommand(info.srcUrl || info.linkUrl);
 });
 chrome.browserAction.onClicked.addListener(tab => {
-  onCommand(tab.url);
+  chrome.permissions.request({
+    permissions: ['activeTab']
+  }, granted => {
+    if (granted && tab.url) {
+      onCommand(tab.url);
+    }
+  });
 });
 chrome.runtime.onMessage.addListener(request => {
   if (request.method === 'open-in') {
@@ -121,7 +131,7 @@ chrome.runtime.onMessage.addListener(request => {
 // icon
 const button = {
   mode: ({id, url}) => {
-    const enabled = url.indexOf('.pdf') !== -1 || url.indexOf('.PDF') !== -1;
+    const enabled = url && (url.indexOf('.pdf') !== -1 || url.indexOf('.PDF') !== -1);
     chrome.browserAction[enabled ? 'enable' : 'disable'](id);
   }
 };

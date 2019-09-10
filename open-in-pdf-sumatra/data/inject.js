@@ -1,0 +1,1 @@
+../../open-in-pdf-reader/data/inject.js
