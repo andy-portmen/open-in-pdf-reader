@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "properties": {
+    "path": {
+      "title": "Path of the external PDF application",
+      "type": "string"
+    },
+    "link": {
+      "title": "Capture the left-click on the PDF links",
+      "type": "boolean"
+    },
+    "download": {
+      "title": "Download the PDF file first, then open it with the PDF reader",
+      "type": "boolean"
+    },
+    "delay": {
+      "title": "Delay in seconds to call the external PDF viewer when the download is finished",
+      "type": "number"
+    },
+    "notify": {
+      "title": "Display desktop notifications",
+      "type": "boolean"
+    }
+  }
+}

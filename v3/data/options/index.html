@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Options Page :: Open in PDF Reader</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="index.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <p class="admin">
+    <span data-i18n="options_admin"></span>
+    <span>(<a data-href="faq8" data-i18n="options_more" target="_blank"></a>).</span>
+  </p>
+
+  <div>
+    <span data-i18n="options_path"></span>
+    <a data-href="faq5" class="inst" data-i18n="options_more" target="_blank"></a>
+  </div>
+  <div class="path">
+    <input type="text" id="path" placeholder="e.g. C:\Program Files(x86)\Adobe\AcroRd32.exe">
+    <button id="check" data-i18n="options_validate"></button>
+    <span id="toast"></span>
+    <select id="insert">
+      <option disabled selected>Examples</option>
+      <option value="%ProgramFiles(x86)%\Adobe\AcroRd32.exe">Adobe Reader (Windows)</option>
+      <option value='"%ProgramFiles(x86)%\Adobe\Acrobat Reader DC\Reader\AcroRd32.exe"'>Adobe Reader DC (Windows)</option>
+      <option value='open -a "Adobe Reader"'>Adobe Reader (Mac)</option>
+      <option value='"%ProgramFiles(x86)%\Foxit Software\Foxit Reader\FoxitReader.exe"'>Foxit Reader (Windows)</option>
+      <option value='open -a "Foxit Reader"'>Foxit Reader (Mac)</option>
+      <option value='"%ProgramFiles%\Tracker Software\PDF Viewer\PDFXCview.exe"'>PDF-XChange Viewer (Widows)</option>
+      <option value='open -a "PDF-XChange Viewer"'>PDF-XChange Viewer (Mac)</option>
+    </select>
+  </div>
+  <div id="delay-container">
+    <span data-i18n="options_delay"></span>
+    <input type="number" id="delay">
+  </div>
+  <hr>
+  <div class="list">
+    <label for="link">
+      <span data-i18n="options_link"></span>
+      <a data-href="faq6" class="inst" data-i18n="options_more" target="_blank"></a>
+    </label>
+    <input type="checkbox" id="link">
+    <label for="download">
+      <span data-i18n="options_download"></span>
+      <a data-href="faq7" class="inst" data-i18n="options_more" target="_blank"></a>
+    </label>
+    <input type="checkbox" id="download">
+    <label for="notify" data-i18n="options_notify"></label>
+    <input type="checkbox" id="notify">
+    <label for="faqs" data-i18n="options_faqs"></label>
+    <input type="checkbox" id="faqs">
+  </div>
+  <p>
+    <button id="support" data-i18n="options_support"></button>
+  </p>
+  <div>
+    <button id="reset" data-i18n="options_reset"></button>
+    <button id="save" data-i18n="options_save"></button>
+    <span id="status"></span>
+  </div>
+  <hr>
+  <div class="foots">
+    <a target=_blank href="https://www.youtube.com/watch?v=HVyk0EWA5F8" data-i18n="options_tutorial"></a>
+    <span>&bull;</span>
+    <a target=_blank href="#" data-i18n="options_open_faqs"></a>
+    <span>&bull;</span>
+    <a target=_blank href="https://www.transifex.com/portmen/open-in-a-pdf-reader/dashboard/" data-i18n="options_translate"></a>
+    <span>&bull;</span>
+    <a target=_blank href="https://github.com/andy-portmen/open-in-pdf-reader" data-i18n="options_github"></a>
+  </div>
+  <script src="index.js"></script>
+</body>
+</html>

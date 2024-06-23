@@ -1,0 +1,47 @@
+{
+  "name": "Open in PDF Reader",
+  "description": "__MSG_description__",
+  "version": "0.3.2",
+  "manifest_version": 3,
+  "default_locale": "en",
+  "permissions": [
+    "storage",
+    "contextMenus",
+    "notifications",
+    "nativeMessaging",
+    "downloads",
+    "activeTab",
+    "alarms"
+  ],
+  "background": {
+    "service_worker": "worker.js"
+  },
+  "storage": {
+    "managed_schema": "schema.json"
+  },
+  "homepage_url": "https://webextension.org/listing/open-in-pdf-reader.html",
+  "icons": {
+    "16": "/data/icons/16.png",
+    "32": "/data/icons/32.png",
+    "48": "/data/icons/48.png",
+    "64": "/data/icons/64.png",
+    "128": "/data/icons/128.png",
+    "256": "/data/icons/256.png",
+    "512": "/data/icons/512.png"
+  },
+  "options_ui": {
+    "page": "/data/options/index.html",
+    "open_in_tab": true
+  },
+  "action": {},
+  "content_scripts": [{
+    "match_about_blank": true,
+    "matches": ["<all_urls>"],
+    "js": ["/data/inject.js"],
+    "run_at": "document_start",
+    "all_frames": true
+  }],
+  "commands": {
+    "_execute_action": {}
+  }
+}

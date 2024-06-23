@@ -1,0 +1,86 @@
+{
+  "description": {
+    "message": "Send PDF links directly to your favorite PDF viewer like Adobe Acrobat Reader"
+  },
+  "options_path": {
+    "message": "Path to a PDF Reader executable:"
+  },
+  "options_link": {
+    "message": "Capture the left-click on the PDF links"
+  },
+  "options_examples": {
+    "message": "Examples:"
+  },
+  "options_download": {
+    "message": "Download PDF file first, then open with the PDF reader"
+  },
+  "options_notify": {
+    "message": "Display desktop notifications"
+  },
+  "options_validate": {
+    "message": "Validate"
+  },
+  "options_reset": {
+    "message": "Reset"
+  },
+  "options_support": {
+    "message": "Support Development"
+  },
+  "options_save": {
+    "message": "Save"
+  },
+  "options_faqs": {
+    "message": "Open FAQs page on updates"
+  },
+  "options_footnote_1": {
+    "message": "If the path is not provided, the default PDF application is used"
+  },
+  "options_footnote_1_2": {
+    "message": " If the executable path contains spaces, make sure to surround the path with double-quotes (e.g.: \"C:\\Program Files (x86)\\...\")"
+  },
+  "options_footnote_2": {
+    "message": "If this option is checked, when a PDF link is clicked, the extension uses your external PDF reader to open the file instead of the built-in PDF reader (tab refresh is required)"
+  },
+  "options_footnote_3": {
+    "message": "If this option is checked, the PDF file is being downloaded to the default download directory of your browser, then the downloaded link is sent to the external PDF reader. Note that for this option to work, the path to the external executable needs to be set first."
+  },
+  "options_footnote_4": {
+    "message": "If you want to uncheck this option, first make sure your external PDF viewer can handle opening remote links. Most known desktop PDF readers cannot open from remote URLs."
+  },
+  "options_footnote_5": {
+    "message": "Only use this path validation tool if the absolute path to the executable is inserted. If for instance, you need to use a command or a relative path, this tool is not working properly."
+  },
+  "options_bold": {
+    "message": "Important note"
+  },
+  "options_translate": {
+    "message": "Translate this extension to your language"
+  },
+  "options_open_faqs": {
+    "message": "Open the FAQs page"
+  },
+  "options_github": {
+    "message": "Open GitHub page"
+  },
+  "options_tutorial": {
+    "message": "Usage Instruction"
+  },
+  "options_delay": {
+    "message": "Delay in seconds to call the external PDF viewer when download is finished"
+  },
+  "bg_msg_1": {
+    "message": "Cannot find the downloaded PDF file!"
+  },
+  "bg_msg_2": {
+    "message": "Download was interrupted"
+  },
+  "bg_msg_3": {
+    "message": "Please wait..."
+  },
+  "bg_msg_4": {
+    "message": "This doesn't seem to be a PDF address. Click the notification to proceed anyway."
+  },
+  "bg_msg_5": {
+    "message": "Cannot detect URL of this page"
+  }
+}

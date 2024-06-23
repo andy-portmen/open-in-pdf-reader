@@ -1,0 +1,80 @@
+{
+  "description": {
+    "message": "Send PDF links directly to your favorite PDF viewer like Adobe Acrobat Reader"
+  },
+  "options_more": {
+    "message": "instruction"
+  },
+  "options_path": {
+    "message": "Path to a PDF Reader executable"
+  },
+  "options_link": {
+    "message": "Capture the left-click on the PDF links"
+  },
+  "options_examples": {
+    "message": "Examples:"
+  },
+  "options_download": {
+    "message": "Download PDF file first, then open with the PDF reader"
+  },
+  "options_notify": {
+    "message": "Display desktop notifications"
+  },
+  "options_validate": {
+    "message": "Validate"
+  },
+  "options_reset": {
+    "message": "Factory Reset"
+  },
+  "options_support": {
+    "message": "Support Development"
+  },
+  "options_save": {
+    "message": "Save Options"
+  },
+  "options_faqs": {
+    "message": "Open FAQs page on updates"
+  },
+  "options_translate": {
+    "message": "Translate this extension to your language"
+  },
+  "options_open_faqs": {
+    "message": "Open the FAQs page"
+  },
+  "options_github": {
+    "message": "Open GitHub page"
+  },
+  "options_tutorial": {
+    "message": "Usage Instruction"
+  },
+  "options_delay": {
+    "message": "Delay in seconds to call the external PDF viewer when download is finished"
+  },
+  "options_admin": {
+    "message": "This extension supports managed storage, which means that if you are an administrator of a network, you can configure it for all computers in your domain. This can make it easier to manage and control the settings and preferences for the extension across your organization"
+  },
+  "bg_msg_1": {
+    "message": "Cannot find the downloaded PDF file!"
+  },
+  "bg_msg_2": {
+    "message": "Download was interrupted"
+  },
+  "bg_msg_3": {
+    "message": "Please wait..."
+  },
+  "bg_msg_4": {
+    "message": "This doesn't seem to be a PDF address. Click the notification to proceed anyway."
+  },
+  "bg_msg_5": {
+    "message": "Cannot detect URL of this page"
+  },
+  "bg_msg_6": {
+    "message": "Usage Instruction"
+  },
+  "bg_msg_7": {
+    "message": "Options"
+  },
+  "bg_msg_8": {
+    "message": "Open in PDF Reader"
+  }
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Open in PDF Reader :: Options Page</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="index.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <div data-i18n="options_path"></div>
+  <div class="path">
+    <input type="text" id="path">
+    <button id="check" data-i18n="options_validate"></button>
+    <span></span>
+    <select id="insert">
+      <option disabled selected>Examples</option>
+      <option value="%ProgramFiles(x86)%\Adobe\AcroRd32.exe">Adobe Reader (Windows)</option>
+      <option value='"%ProgramFiles(x86)%\Adobe\Acrobat Reader DC\Reader\AcroRd32.exe"'>Adobe Reader DC (Windows)</option>
+      <option value='open -a "Adobe Reader"'>Adobe Reader (Mac)</option>
+      <option value='"%ProgramFiles(x86)%\Foxit Software\Foxit Reader\FoxitReader.exe"'>Foxit Reader (Windows)</option>
+      <option value='open -a "Foxit Reader"'>Foxit Reader (Mac)</option>
+      <option value='"%ProgramFiles%\Tracker Software\PDF Viewer\PDFXCview.exe"'>PDF-XChange Viewer (Widows)</option>
+      <option value='open -a "PDF-XChange Viewer"'>PDF-XChange Viewer (Mac)</option>
+    </select>
+  </div>
+  <ul>
+    <li class="note" data-i18n="options_footnote_1"></li>
+    <li class="note" data-i18n="options_footnote_1_2"></li>
+    <li class="note" data-i18n="options_footnote_5"></li>
+  </ul>
+  <div>
+    <span data-i18n="options_delay"></span>
+    <input type="number" id="delay">
+  </div>
+
+  <hr>
+
+  <div class="list">
+    <input type="checkbox" id="link">
+    <label for="link" data-i18n="options_link"></label>
+    <span></span>
+    <span class="note" data-i18n="options_footnote_2"></span>
+    <input type="checkbox" id="download">
+    <label for="download" data-i18n="options_download"></label>
+    <span></span>
+    <span class="note" data-i18n="options_footnote_3"></span>
+    <span></span>
+    <div class="note">
+      [<b data-i18n="options_bold"></b>] <span data-i18n="options_footnote_4"></span>
+    </div>
+    <input type="checkbox" id="notify">
+    <label for="notify" data-i18n="options_notify"></label>
+    <input type="checkbox" id="faqs">
+    <label for="faqs" data-i18n="options_faqs"></label>
+  </div>
+
+  <br>
+  <div id="explore" data-cols="4"></div>
+  <br>
+  <div>
+    <button id="reset" data-i18n="options_reset"></button>
+    <button id="support" data-i18n="options_support"></button>
+    <button id="save" data-i18n="options_save"></button>
+    <span id="status"></span>
+  </div>
+  <hr>
+
+  <div>
+    <a target=_blank href="https://www.youtube.com/watch?v=HVyk0EWA5F8" data-i18n="options_tutorial"></a> | <a target=_blank href="#" data-i18n="options_open_faqs"></a> | <a target=_blank href="https://www.transifex.com/portmen/open-in-a-pdf-reader/dashboard/" data-i18n="options_translate"></a> | <a target=_blank href="https://github.com/andy-portmen/open-in-pdf-reader" data-i18n="options_github"></a>
+  </div>
+
+  <script src="index.js"></script>
+  <script async src="matched.js"></script>
+</body>
+</html>
