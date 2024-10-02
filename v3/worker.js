@@ -220,6 +220,29 @@ chrome.runtime.onMessage.addListener(request => {
   }
 });
 
+// Listener for new tabs
+chrome.tabs.onCreated.addListener(function(tab) {
+  // Check if the tab has a URL and ends with .pdf
+  if (tab.url && tab.url.endsWith('.pdf')) {
+    // Open the PDF in the external application
+    onCommand(tab.url);
+    // Optional: Close the new tab
+    chrome.tabs.remove(tab.id);
+  } else {
+    // Listen for tab updates if the URL is not immediately available
+    const updateListener = function(tabId, changeInfo, updatedTab) {
+      if (tabId === tab.id && changeInfo.status === 'complete') {
+        chrome.tabs.onUpdated.removeListener(updateListener);
+        if (updatedTab.url && updatedTab.url.endsWith('.pdf')) {
+          onCommand(updatedTab.url);
+          chrome.tabs.remove(updatedTab.id);
+        }
+      }
+    };
+    chrome.tabs.onUpdated.addListener(updateListener);
+  }
+});
+
 /* FAQs & Feedback */
 {
   const {management, runtime: {onInstalled, setUninstallURL, getManifest}, storage, tabs} = chrome;
