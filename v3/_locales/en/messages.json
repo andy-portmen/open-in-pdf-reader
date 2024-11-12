@@ -3,7 +3,7 @@
     "message": "Send PDF links directly to your favorite PDF viewer like Adobe Acrobat Reader"
   },
   "options_more": {
-    "message": "instruction"
+    "message": "(instruction)"
   },
   "options_path": {
     "message": "Path to a PDF Reader executable"

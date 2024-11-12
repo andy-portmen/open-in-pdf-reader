@@ -9,7 +9,7 @@
 <body>
   <p class="admin">
     <span data-i18n="options_admin"></span>
-    <span>(<a data-href="faq8" data-i18n="options_more" target="_blank"></a>).</span>
+    <span><a data-href="faq8" data-i18n="options_more" target="_blank"></a>.</span>
   </p>
 
   <div>
@@ -22,8 +22,10 @@
     <span id="toast"></span>
     <select id="insert">
       <option disabled selected>Examples</option>
-      <option value="%ProgramFiles(x86)%\Adobe\AcroRd32.exe">Adobe Reader (Windows)</option>
-      <option value='"%ProgramFiles(x86)%\Adobe\Acrobat Reader DC\Reader\AcroRd32.exe"'>Adobe Reader DC (Windows)</option>
+      <option value="%ProgramFiles%\Adobe\AcroRd32.exe">Adobe Reader (Windows)</option>
+      <option value="%ProgramFiles(x86)%\Adobe\AcroRd32.exe">Adobe Reader (Windows x86)</option>
+      <option value='"%ProgramFiles%\Adobe\Acrobat Reader DC\Reader\AcroRd32.exe"'>Adobe Reader DC (Windows)</option>
+      <option value='"%ProgramFiles(x86)%\Adobe\Acrobat Reader DC\Reader\AcroRd32.exe"'>Adobe Reader DC (Windows x86)</option>
       <option value='open -a "Adobe Reader"'>Adobe Reader (Mac)</option>
       <option value='"%ProgramFiles(x86)%\Foxit Software\Foxit Reader\FoxitReader.exe"'>Foxit Reader (Windows)</option>
       <option value='open -a "Foxit Reader"'>Foxit Reader (Mac)</option>
@@ -52,6 +54,7 @@
     <label for="faqs" data-i18n="options_faqs"></label>
     <input type="checkbox" id="faqs">
   </div>
+  <hr>
   <p>
     <button id="support" data-i18n="options_support"></button>
   </p>
@@ -70,6 +73,7 @@
     <span>&bull;</span>
     <a target=_blank href="https://github.com/andy-portmen/open-in-pdf-reader" data-i18n="options_github"></a>
   </div>
+  <script src="termlib_parser.js"></script>
   <script src="index.js"></script>
 </body>
 </html>

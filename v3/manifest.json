@@ -1,7 +1,7 @@
 {
   "name": "Open in PDF Reader",
   "description": "__MSG_description__",
-  "version": "0.3.2",
+  "version": "0.3.4",
   "manifest_version": 3,
   "default_locale": "en",
   "permissions": [
@@ -14,7 +14,8 @@
     "alarms"
   ],
   "background": {
-    "service_worker": "worker.js"
+    "service_worker": "worker.js",
+    "scripts": ["context.js", "worker.js"]
   },
   "storage": {
     "managed_schema": "schema.json"
@@ -43,5 +44,11 @@
   }],
   "commands": {
     "_execute_action": {}
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{0d3afca0-aedf-491f-b0f9-9ffc22113ea8}",
+      "strict_min_version": "128.0"
+    }
   }
 }

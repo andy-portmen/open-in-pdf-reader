@@ -1,3 +1,4 @@
+/* global Parser */
 'use strict';
 
 const NATIVE = 'com.add0n.node';
@@ -72,9 +73,14 @@ document.getElementById('support').addEventListener('click', () => chrome.tabs.c
   url: chrome.runtime.getManifest().homepage_url + '?rd=donate'
 }));
 
-
 document.getElementById('check').addEventListener('click', () => {
   let path = document.getElementById('path').value;
+  const termref = {
+    lineBuffer: path
+  };
+  const parser = new Parser();
+  parser.parseLine(termref);
+
   if (path) {
     chrome.runtime.sendNativeMessage(NATIVE, {
       cmd: 'spec'
@@ -94,26 +100,56 @@ document.getElementById('check').addEventListener('click', () => {
               .replace('%ProgramFiles(x86)%', res.env['ProgramFiles(x86)'])
               .replace('%ProgramFiles%', res.env.ProgramFiles);
           }
+
           chrome.runtime.sendNativeMessage(NATIVE, {
-            permissions: ['fs'],
-            args: [path],
+            permissions: ['fs', 'path'],
+            args: [path, termref.argv[0], res.env.PATH || ''],
             script: `
-            require('fs').stat(args[0], (error, stats) => {
-              if (error) {
-                push({error});
-                done();
+
+            const paths = [args[0]];
+            const delimiter = require('path').delimiter;
+            const sep = require('path').sep;
+
+            if (args[1]) {
+              if (args[1].startsWith(sep)) {
+                paths.push(args[1]);
               }
-              push(Object.assign({}, stats, {
-                isDirectory: stats.isDirectory()
-              }));
-              done();
-            });
+              else {
+                for (const path of args[2].split(delimiter)) {
+                  paths.push(path + sep + args[1]);
+                }
+              }
+            }
+
+            const check = () => {
+              const path = paths.shift();
+              require('fs').stat(path, (error, stats) => {
+                if (error) {
+                  if (paths.length === 0) {
+                    push({
+                      error
+                    });
+                    done();
+                  }
+                  else {
+                    check();
+                  }
+                }
+                else {
+                  push(Object.assign({}, stats, {
+                    isDirectory: stats.isDirectory(),
+                    path
+                  }));
+                  done();
+                }
+              });
+            };
+            check();
             `
           }, resp => {
-            console.log(resp);
             const error = resp.error;
             if (error) {
-              console.log(error);
+              console.error(error);
               if (error.code === 'ENOENT') {
                 return notify('Does not exist; ' + error.code, 'red', 5000, 'toast');
               }
@@ -125,7 +161,7 @@ document.getElementById('check').addEventListener('click', () => {
               notify('Not a executable path! Is this a directory?', 'red', 5000, 'toast');
             }
             else {
-              notify('Everything looks good!', 'green', 5000, 'toast');
+              notify('Found: ' + resp.path, 'green', 5000, 'toast');
             }
           });
         });

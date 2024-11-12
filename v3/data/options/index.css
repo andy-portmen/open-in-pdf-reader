@@ -1,7 +1,11 @@
+:root {
+  --fg-link: #004da8;
+}
+
 body {
   padding: 10px;
   font-family: "Helvetica Neue", Helvetica, sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   width: min(100% - 2rem, 60rem);
   margin-inline: auto;
 }
@@ -28,7 +32,7 @@ input[type=text] {
   outline: none;
   padding: 0 5px;
 }
-input[type=number] {
+input[type="number"] {
   padding: 5px;
   outline: none;
 }
@@ -58,7 +62,7 @@ hr {
 }
 a,
 a:visited {
-  color: #0091ff;
+  color: var(--fg-link);
   text-decoration: none;
 }
 
@@ -66,7 +70,7 @@ a:visited {
   display: grid;
   grid-template-columns: 1fr min-content;
   grid-gap: 5px;
-  padding: 10px 0 5px 0;
+  padding: 10px 0 5px;
   align-items: center;
 }
 .path input[type=text] {
@@ -97,13 +101,7 @@ a:visited {
   display: flex;
   gap: 5px;
   align-items: center;
+  white-space: nowrap;
+  flex-wrap: wrap;
 }
 
-.inst {
-  color: #fff;
-  text-decoration: none;
-  background-color: #5e7692;
-  padding: 3px 5px;
-  border-radius: 3px;
-  font-size: 90%;
-}

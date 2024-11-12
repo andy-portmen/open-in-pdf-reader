@@ -1,6 +1,8 @@
 const NATIVE = 'com.add0n.node';
 
-self.importScripts('context.js');
+if (typeof importScripts !== 'undefined') {
+  self.importScripts('context.js');
+}
 
 const storage = prefs => new Promise(resolve => {
   chrome.storage.managed.get(prefs, ps => {
@@ -224,8 +226,7 @@ chrome.runtime.onMessage.addListener(request => {
 {
   const {management, runtime: {onInstalled, setUninstallURL, getManifest}, storage, tabs} = chrome;
   if (navigator.webdriver !== true) {
-    const page = getManifest().homepage_url;
-    const {name, version} = getManifest();
+    const {homepage_url: page, name, version} = getManifest();
     onInstalled.addListener(({reason, previousVersion}) => {
       management.getSelf(({installType}) => installType === 'normal' && storage.local.get({
         'faqs': true,
