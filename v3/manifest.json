@@ -11,7 +11,9 @@
     "nativeMessaging",
     "downloads",
     "activeTab",
-    "alarms"
+    "alarms",
+    "tabs",
+    "<all_urls>"
   ],
   "background": {
     "service_worker": "worker.js",
