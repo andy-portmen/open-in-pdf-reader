@@ -196,9 +196,12 @@ function open(d) {
         const msg = resp.stderr || resp.error?.error || resp.stdout;
         if (msg) {
           badge(msg);
-          // only display errors during 3s window
-          if (Date.now() - n < 3000) {
-            notify(msg);
+          // display notification if we have an error
+          if (resp.stderr || resp.error) {
+            // only display errors during 3s window
+            if (Date.now() - n < 3000) {
+              notify(msg);
+            }
           }
         }
       }
