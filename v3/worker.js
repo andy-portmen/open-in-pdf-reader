@@ -24,6 +24,17 @@ const notify = message => storage({
     when: Date.now() + 3000
   });
 }));
+const badge = async message => {
+  const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
+  chrome.action.setBadgeText({
+    tabId: tab.id,
+    text: 'E'
+  });
+  chrome.action.setTitle({
+    tabId: tab.id,
+    title: message.message || message.error || message
+  });
+};
 
 const uconfirm = (message, href) => chrome.notifications.create('open:' + href, {
   title: chrome.runtime.getManifest().name,
@@ -136,42 +147,58 @@ function open(d) {
   }).then(prefs => {
     const script = `
       const os = require('os').platform();
-      let cmd = 'start "' + args[0] +'"';
-      if (os === 'darwin') {
-        cmd = 'open "' + args[0] + '"';
-      }
-      if (os.startsWith('win')) {
-        cmd = 'start "" "' + args[0] +'"';
-      }
+      const cmds = [];
+
       if (args[1]) {
-        cmd = args[1] + ' "' + args[0] + '"';
+        cmds.push(args[1] + ' "' + args[0] + '"');
+        if (args[1].includes('%ProgramFiles(x86)%')) {
+          cmds.push(args[1].replace('%ProgramFiles(x86)%', '%ProgramFiles%') + ' "' + args[0] + '"');
+        }
+        if (args[1].includes('"') === false) {
+          cmds.push('"' + args[1] + '" "' + args[0] + '"');
+          if (args[1].includes('%ProgramFiles(x86)%')) {
+            cmds.push('"' + args[1].replace('%ProgramFiles(x86)%', '%ProgramFiles%') + '" "' + args[0] + '"');
+          }
+        }
       }
-      require('child_process').exec(cmd, (error, stdout, stderr) => {
-        if (cmd.indexOf('%ProgramFiles(x86)%') !== -1 && error) {
-          cmd = cmd.replace('%ProgramFiles(x86)%', '%ProgramFiles%')
-          require('child_process').exec(cmd, (error, stdout, stderr) => {
-            push({error, stdout, stderr});
+      else if (os === 'darwin') {
+        cmds.push('open "' + args[0] + '"');
+      }
+      else if (os.startsWith('win')) {
+        cmds.push('start "" "' + args[0] +'"');
+      }
+      else {
+        cmds.push('start "' + args[0] +'"');
+      }
+
+      const run = () => {
+        const cmd = cmds.shift();
+
+        require('child_process').exec(cmd, (error, stdout, stderr) => {
+          if (error && cmds.length) {
+            run();
+          }
+          else {
+            push({cmd, error, stdout, stderr});
             done();
-          });
-        }
-        else {
-          push({error, stdout, stderr});
-          done();
-        }
-      });
-    `;
+          }
+        });
+      };
+      run();`;
+
     chrome.runtime.sendNativeMessage(NATIVE, {
       permissions: ['child_process', 'os'],
       args: [d.filename, prefs.path],
       script
     }, resp => {
       if (resp) {
-        const msg = resp.stderr || resp.error || resp.stdout;
+        console.info('[result]', resp);
+        const msg = resp.stderr || resp.error?.error || resp.stdout;
         if (msg) {
-          console.error(resp);
-          // only display errors during 2s window
-          if (Date.now() - n < 2000) {
-            notify(msg.error || msg);
+          badge(msg);
+          // only display errors during 3s window
+          if (Date.now() - n < 3000) {
+            notify(msg);
           }
         }
       }
