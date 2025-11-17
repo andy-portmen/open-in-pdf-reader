@@ -32,5 +32,5 @@ function update(bol) {
 
 chrome.storage.local.get({
   link: false
-}, prefs => update(prefs.link));
+}).then(prefs => update(prefs.link));
 chrome.storage.onChanged.addListener(prefs => update(prefs.link.newValue));

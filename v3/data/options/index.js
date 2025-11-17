@@ -22,50 +22,47 @@ const notify = (msg, color = '#000', timeout = 2000, id = 'status') => {
 
 document.querySelector('[data-i18n="options_open_faqs"]').href = chrome.runtime.getManifest().homepage_url;
 
-function save() {
-  chrome.storage.local.set({
+async function save() {
+  await chrome.storage.local.set({
     path: document.getElementById('path').value,
     link: document.getElementById('link').checked,
     notify: document.getElementById('notify').checked,
     faqs: document.getElementById('faqs').checked,
     download: document.getElementById('download').checked,
     delay: Math.max(0, Number(document.getElementById('delay').value))
-  }, () => {
-    notify('Options saved.');
   });
+  notify('Options saved.');
 }
 
-function restore() {
+async function restore() {
   // Use default value color = 'red' and likesColor = true.
-  chrome.storage.local.get({
+  const prefs = await chrome.storage.local.get({
     path: '',
     link: false,
     notify: true,
     faqs: true,
     download: true,
     delay: 0
-  }, prefs => {
-    document.getElementById('path').value = prefs.path;
-    document.getElementById('link').checked = prefs.link;
-    document.getElementById('notify').checked = prefs.notify;
-    document.getElementById('faqs').checked = prefs.faqs;
-    document.getElementById('download').checked = prefs.download;
-    document.getElementById('delay').value = prefs.delay;
   });
+  document.getElementById('path').value = prefs.path;
+  document.getElementById('link').checked = prefs.link;
+  document.getElementById('notify').checked = prefs.notify;
+  document.getElementById('faqs').checked = prefs.faqs;
+  document.getElementById('download').checked = prefs.download;
+  document.getElementById('delay').value = prefs.delay;
 }
 document.addEventListener('DOMContentLoaded', restore);
 document.getElementById('save').addEventListener('click', save);
 
-document.getElementById('reset').addEventListener('click', e => {
+document.getElementById('reset').addEventListener('click', async e => {
   if (e.detail === 1) {
     notify('Double-click to reset!', 'red', 5000);
   }
   else {
     localStorage.clear();
-    chrome.storage.local.clear(() => {
-      chrome.runtime.reload();
-      window.close();
-    });
+    await chrome.storage.local.clear();
+    chrome.runtime.reload();
+    window.close();
   }
 });
 

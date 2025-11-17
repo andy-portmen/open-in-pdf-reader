@@ -1,7 +1,7 @@
 {
   "name": "Open in PDF Reader",
   "description": "__MSG_description__",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "manifest_version": 3,
   "default_locale": "en",
   "permissions": [
@@ -48,7 +48,10 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "{0d3afca0-aedf-491f-b0f9-9ffc22113ea8}",
-      "strict_min_version": "128.0"
+      "strict_min_version": "128.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
     }
   }
 }

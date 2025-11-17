@@ -4,28 +4,35 @@ if (typeof importScripts !== 'undefined') {
   self.importScripts('context.js');
 }
 
-const storage = prefs => new Promise(resolve => {
-  chrome.storage.managed.get(prefs, ps => {
-    chrome.storage.local.get(chrome.runtime.lastError ? prefs : Object.assign(prefs, ps), resolve);
-  });
-});
+async function storage(prefs) {
+  const managed = await chrome.storage.managed.get(prefs).catch(() => {}); // managed storage may error
+
+  return chrome.storage.local.get(Object.assign({}, prefs, managed));
+}
 
 const translate = id => chrome.i18n.getMessage(id);
 
-const notify = message => storage({
-  notify: true
-}).then(prefs => prefs.notify && chrome.notifications.create({
-  title: chrome.runtime.getManifest().name,
-  type: 'basic',
-  iconUrl: '/data/icons/48.png',
-  message: message.message || message.error || message
-}, notificationId => {
+const notify = async message => {
+  const prefs = await storage({notify: true});
+  if (prefs.notify === false) {
+    return;
+  }
+  const notificationId = await chrome.notifications.create({
+    title: chrome.runtime.getManifest().name,
+    type: 'basic',
+    iconUrl: '/data/icons/48.png',
+    message: message.message || message.error || message
+  });
   chrome.alarms.create('close/notification:' + notificationId, {
     when: Date.now() + 3000
   });
-}));
+};
 const badge = async message => {
   const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
+  if (!tab) {
+    console.info('[badge]', message);
+    return;
+  }
   chrome.action.setBadgeText({
     tabId: tab.id,
     text: 'E'
@@ -36,16 +43,17 @@ const badge = async message => {
   });
 };
 
-const uconfirm = (message, href) => chrome.notifications.create('open:' + href, {
-  title: chrome.runtime.getManifest().name,
-  type: 'basic',
-  iconUrl: '/data/icons/48.png',
-  message
-}, notificationId => {
+const uconfirm = async (message, href) => {
+  const notificationId = await chrome.notifications.create('open:' + href, {
+    title: chrome.runtime.getManifest().name,
+    type: 'basic',
+    iconUrl: '/data/icons/48.png',
+    message
+  });
   chrome.alarms.create('close/notification:' + notificationId, {
     when: Date.now() + 10000
   });
-});
+};
 
 chrome.notifications.onClicked.addListener(id => {
   if (id.startsWith('open:')) {
@@ -59,45 +67,38 @@ const observe = () => {
     return;
   }
   observe.skip = true;
-  chrome.downloads.onChanged.addListener(d => {
+  chrome.downloads.onChanged.addListener(async d => {
     if (d.state && (d.state.current === 'complete' || d.state.current === 'interrupted')) {
-      chrome.storage.session.get({
-        ids: []
-      }, ps => {
-        storage({
-          delay: 0
-        }).then(prefs => {
-          if (ps.ids.includes(d.id)) {
-            if (d.state.current === 'complete') {
-              chrome.alarms.create('open:' + d.id, {
-                when: Date.now() + prefs.delay * 1000
-              });
-            }
-            else {
-              notify(translate('bg_msg_2'));
-            }
-          }
-        });
-      });
+      const ps = await chrome.storage.session.get({ids: []});
+      const prefs = await storage({delay: 0});
+      if (ps.ids.includes(d.id)) {
+        if (d.state.current === 'complete') {
+          chrome.alarms.create('open:' + d.id, {
+            when: Date.now() + prefs.delay * 1000
+          });
+        }
+        else {
+          notify(translate('bg_msg_2'));
+        }
+      }
     }
   });
 };
 observe.skip = false;
 
-chrome.alarms.onAlarm.addListener(a => {
+chrome.alarms.onAlarm.addListener(async a => {
   if (a.name.startsWith('open:')) {
-    chrome.downloads.search({
+    const results = await chrome.downloads.search({
       id: Number(a.name.replace('open:', ''))
-    }, ([d]) => {
-      if (d) {
-        storage({
-          delay: 0
-        }).then(prefs => setTimeout(open, prefs.delay * 1000, d));
-      }
-      else {
-        notify(translate('bg_msg_1'));
-      }
     });
+    const d = results[0];
+    if (d) {
+      const prefs = await storage({delay: 0});
+      setTimeout(open, prefs.delay * 1000, d);
+    }
+    else {
+      notify(translate('bg_msg_1'));
+    }
   }
   else if (a.name.startsWith('close/notification:')) {
     chrome.notifications.clear(a.name.replace('close/notification:', ''));
@@ -108,21 +109,15 @@ chrome.alarms.onAlarm.addListener(a => {
 chrome.storage.session.get({
   ids: []
 }, async prefs => {
-  const ids = [];
-  for (const id of prefs.ids) {
-    const ds = await new Promise(resolve => chrome.downloads.search({id}, resolve));
-    if (ds.length === 0 || ds[0].state === 'complete' || ds[0].state === 'interrupted') {
-      ids.push(id);
-    }
-  }
-  prefs.ids = prefs.ids.filter(id => ids.indexOf(id) === -1);
-  chrome.storage.session.set(prefs);
-  if (prefs.ids.length) {
+  const ids = await chrome.downloads.search({});
+  const filteredIds = ids.filter(id => id.state === 'complete' || id.state === 'interrupted');
+  chrome.storage.session.set({ids: filteredIds});
+  if (filteredIds.length) {
     observe();
   }
 });
 
-function download(url) {
+async function download(url) {
   /* Google Redirect */
   if (/google\.[^./]+\/url?/.test(url)) {
     const tmp = /url=([^&]+)/.exec(url);
@@ -133,103 +128,108 @@ function download(url) {
   // https://github.com/andy-portmen/native-client/issues/70
   url = url.split('#')[0];
 
-  chrome.storage.session.get({
-    ids: []
-  }, prefs => chrome.downloads.download({url}, id => chrome.storage.session.set({
-    ids: [...prefs.ids, id]
-  }, observe)));
-}
-
-function open(d) {
-  const n = Date.now();
-  storage({
-    path: ''
-  }).then(prefs => {
-    const script = `
-      const os = require('os').platform();
-      const cmds = [];
-
-      if (args[1]) {
-        cmds.push(args[1] + ' "' + args[0] + '"');
-        if (args[1].includes('%ProgramFiles(x86)%')) {
-          cmds.push(args[1].replace('%ProgramFiles(x86)%', '%ProgramFiles%') + ' "' + args[0] + '"');
-        }
-        if (args[1].includes('"') === false) {
-          cmds.push('"' + args[1] + '" "' + args[0] + '"');
-          if (args[1].includes('%ProgramFiles(x86)%')) {
-            cmds.push('"' + args[1].replace('%ProgramFiles(x86)%', '%ProgramFiles%') + '" "' + args[0] + '"');
-          }
-        }
-      }
-      else if (os === 'darwin') {
-        cmds.push('open "' + args[0] + '"');
-      }
-      else if (os.startsWith('win')) {
-        cmds.push('start "" "' + args[0] +'"');
-      }
-      else {
-        cmds.push('start "' + args[0] +'"');
-      }
-
-      const run = () => {
-        const cmd = cmds.shift();
-
-        require('child_process').exec(cmd, (error, stdout, stderr) => {
-          if (error && cmds.length) {
-            run();
-          }
-          else {
-            push({cmd, error, stdout, stderr});
-            done();
-          }
-        });
-      };
-      run();`;
-
-    chrome.runtime.sendNativeMessage(NATIVE, {
-      permissions: ['child_process', 'os'],
-      args: [d.filename, prefs.path],
-      script
-    }, resp => {
-      if (resp) {
-        console.info('[result]', resp);
-        const msg = resp.stderr || resp.error?.error || resp.stdout;
-        if (msg) {
-          badge(msg);
-          // display notification if we have an error
-          if (resp.stderr || resp.error) {
-            // only display errors during 3s window
-            if (Date.now() - n < 3000) {
-              notify(msg);
-            }
-          }
-        }
-      }
-      else {
-        chrome.tabs.create({
-          url: '/data/helper/index.html'
-        });
-      }
-    });
+  const prefs = await chrome.storage.session.get({ids: []});
+  const id = await new Promise((resolve, reject) => {
+    chrome.downloads.download({url}, resolve);
   });
+  await chrome.storage.session.set({
+    ids: [...prefs.ids, id]
+  });
+  observe();
 }
 
-const onCommand = url => {
-  storage({
+async function open(d) {
+  const n = Date.now();
+  const prefs = await storage({
+    path: ''
+  });
+
+  const script = `
+    const os = require('os').platform();
+    const cmds = [];
+
+    if (args[1]) {
+      cmds.push(args[1] + ' "' + args[0] + '"');
+      if (args[1].includes('%ProgramFiles(x86)%')) {
+        cmds.push(args[1].replace('%ProgramFiles(x86)%', '%ProgramFiles%') + ' "' + args[0] + '"');
+      }
+      if (args[1].includes('"') === false) {
+        cmds.push('"' + args[1] + '" "' + args[0] + '"');
+        if (args[1].includes('%ProgramFiles(x86)%')) {
+          cmds.push('"' + args[1].replace('%ProgramFiles(x86)%', '%ProgramFiles%') + '" "' + args[0] + '"');
+        }
+      }
+    }
+    else if (os === 'darwin') {
+      cmds.push('open "' + args[0] + '"');
+    }
+    else if (os === 'linux' || os === 'freebsd' || os === 'openbsd') {
+      cmds.push('xdg-open "' + args[0] +'"');
+    }
+    else { // windows
+      cmds.push('start "" "' + args[0] +'"');
+    }
+
+    const run = () => {
+      const cmd = cmds.shift();
+
+      require('child_process').exec(cmd, (error, stdout, stderr) => {
+        if (error && cmds.length) {
+          run();
+        }
+        else {
+          push({cmd, error, stdout, stderr});
+          done();
+        }
+      });
+    };
+    run();`;
+
+  const resp = await chrome.runtime.sendNativeMessage(NATIVE, {
+    permissions: ['child_process', 'os'],
+    args: [d.filename, prefs.path],
+    script
+  }).catch(e => undefined);
+
+  if (resp) {
+    console.info('[result]', resp);
+    const msg = resp.stderr || resp.error?.error || resp.stdout;
+    if (msg) {
+      badge(msg);
+      // display notification if we have an error
+      if (resp.stderr || resp.error) {
+        // only display errors during 3s window
+        if (Date.now() - n < 3000) {
+          notify(msg);
+        }
+      }
+    }
+  }
+  else {
+    chrome.tabs.create({
+      url: '/data/helper/index.html'
+    });
+  }
+}
+
+const onCommand = async url => {
+  const prefs = await storage({
     download: true,
     path: ''
-  }).then(prefs => {
-    // if path is not set, we need to first download the PDF file so that
-    // the OS detects the external executable from the mime type
-    if (prefs.download || prefs.path === '') {
-      download(url);
-    }
-    else {
-      open({
-        filename: url
-      });
-    }
   });
+
+  console.log(prefs);
+
+  // if path is not set, we need to first download the PDF file so that
+  // the OS detects the external executable from the mime type
+  if (prefs.download || prefs.path === '') {
+    download(url);
+  }
+  else {
+    open({
+      filename: url
+    });
+  }
 };
 
 chrome.action.onClicked.addListener(tab => {

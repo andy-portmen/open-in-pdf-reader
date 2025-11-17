@@ -22,16 +22,30 @@
     <span id="toast"></span>
     <select id="insert">
       <option disabled selected>Examples</option>
-      <option value="%ProgramFiles%\Adobe\Acrobat DC\Acrobat\Acrobat.exe">Adobe Acrobat DC (Windows)</option>
-      <option value="%ProgramFiles%\Adobe\AcroRd32.exe">Adobe Reader (Windows)</option>
-      <option value="%ProgramFiles(x86)%\Adobe\AcroRd32.exe">Adobe Reader (Windows x86)</option>
-      <option value='"%ProgramFiles%\Adobe\Acrobat Reader DC\Reader\AcroRd32.exe"'>Adobe Reader DC (Windows)</option>
-      <option value='"%ProgramFiles(x86)%\Adobe\Acrobat Reader DC\Reader\AcroRd32.exe"'>Adobe Reader DC (Windows x86)</option>
-      <option value='open -a "Adobe Reader"'>Adobe Reader (Mac)</option>
-      <option value='"%ProgramFiles(x86)%\Foxit Software\Foxit Reader\FoxitReader.exe"'>Foxit Reader (Windows)</option>
-      <option value='open -a "Foxit Reader"'>Foxit Reader (Mac)</option>
-      <option value='"%ProgramFiles%\Tracker Software\PDF Viewer\PDFXCview.exe"'>PDF-XChange Viewer (Widows)</option>
-      <option value='open -a "PDF-XChange Viewer"'>PDF-XChange Viewer (Mac)</option>
+      <optgroup label="Windows">
+        <option value="%ProgramFiles%\Adobe\Acrobat DC\Acrobat\Acrobat.exe">Adobe Acrobat DC</option>
+        <option value="%ProgramFiles%\Adobe\AcroRd32.exe">Adobe Reader</option>
+        <option value='"%ProgramFiles%\Adobe\Acrobat Reader DC\Reader\AcroRd32.exe"'>Adobe Reader DC</option>
+        <option value='"%ProgramFiles%\Tracker Software\PDF Viewer\PDFXCview.exe"'>PDF-XChange Viewer</option>
+        <option value='"%ProgramFiles%\Mozilla Firefox\firefox.exe"'>Firefox PDF Viewer</option>
+        <option value='"%ProgramFiles%\Google\Chrome\Application\chrome.exe"'>Chrome PDF Viewer</option>
+      </optgroup>
+      <optgroup label="Windows (x86)">
+        <option value='"%ProgramFiles(x86)%\Foxit Software\Foxit Reader\FoxitReader.exe"'>Foxit Reader</option>
+        <option value="%ProgramFiles(x86)%\Adobe\AcroRd32.exe">Adobe Reader</option>
+        <option value='"%ProgramFiles(x86)%\Adobe\Acrobat Reader DC\Reader\AcroRd32.exe"'>Adobe Reader DC</option>
+      </optgroup>
+      <optgroup label="Mac">
+        <option value='open -a "Adobe Reader"'>Adobe Reader</option>
+        <option value='open -a "Foxit Reader"'>Foxit Reader</option>
+        <option value='open -a "PDF-XChange Viewer"'>PDF-XChange Viewer</option>
+        <option value='open -a "Firefox"'>Firefox PDF Viewer</option>
+        <option value='open -a "Google Chrome"'>Chrome PDF Viewer</option>
+      </optgroup>
+      <optgroup label="Linux">
+        <option value='firefox'>Firefox PDF Viewer</option>
+        <option value='google-chrome'>Chrome PDF Viewer</option>
+      </optgroup>
     </select>
   </div>
   <div id="delay-container">
